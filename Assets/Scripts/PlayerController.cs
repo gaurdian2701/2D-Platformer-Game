@@ -18,13 +18,6 @@ public class PlayerController : MonoBehaviour
     private CapsuleCollider2D playerCollider;
     private float horizontalInput;
 
-    private enum PlayerState
-    {
-        idle,
-        jumping
-    };
-
-    private PlayerState playerState;
 
     // Start is called before the first frame update
     void Start()
@@ -49,7 +42,9 @@ public class PlayerController : MonoBehaviour
         horizontalInput = Input.GetAxisRaw("Horizontal");
 
         MovePlayer(horizontalInput);
-        PlayMoveAnimation();
+
+        if(IsGrounded())
+            PlayMoveAnimation();
 
         if (Input.GetKey(KeyCode.LeftControl))
         {
@@ -76,10 +71,9 @@ public class PlayerController : MonoBehaviour
         position.x += inputHorizontal * moveSpeed * Time.deltaTime;
         transform.position = position;
 
-        if(Input.GetKeyDown(KeyCode.Space) && playerState != PlayerState.jumping)
+        if(Input.GetKeyDown(KeyCode.Space) && IsGrounded())
         {
             rb.velocity = new Vector2(rb.velocity.x, jumpPower);
-            playerState = PlayerState.jumping;
             PlayJumpAnimation();
         }
     }
@@ -106,11 +100,9 @@ public class PlayerController : MonoBehaviour
     void CheckForFalling()
     {
         if (IsGrounded())
-        {
             animator.SetBool("PlayerJumped", false);
-            playerState = PlayerState.idle;
-        }
     }
+
     bool IsGrounded()
     {
         if (Physics2D.Raycast(playerCollider.bounds.center, -transform.up, 2.3f, LayerMask.GetMask("Platform")))
