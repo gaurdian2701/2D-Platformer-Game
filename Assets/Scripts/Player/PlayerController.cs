@@ -39,7 +39,6 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        Debug.Log(horizontalInput);
         CheckForFalling();
         GetPlayerInput();
         CheckDirection();
