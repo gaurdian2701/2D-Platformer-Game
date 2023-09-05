@@ -132,12 +132,10 @@ public class PlayerController : MonoBehaviour
     {
         Gizmos.color = Color.green;
         RaycastHit2D rayhit = Physics2D.Raycast(playerCollider.bounds.center, -transform.up, 2.3f, LayerMask.GetMask("Platform"));
-        Gizmos.DrawRay(playerCollider.bounds.center, -transform.up);
 
         if (rayhit)
-        {
             Gizmos.color = Color.red;
-            Gizmos.DrawRay(playerCollider.bounds.center, -transform.up);
-        }
+    
+        Gizmos.DrawRay(playerCollider.bounds.center, -transform.up);
     }
 }
