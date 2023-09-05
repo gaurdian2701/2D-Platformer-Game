@@ -20,13 +20,13 @@ public class PlayerController : MonoBehaviour
 
     private enum PlayerState
     {
-        idle,
+        grounded,
+        falling,
         jumping
     };
 
     private PlayerState playerState;
 
-    // Start is called before the first frame update
     void Start()
     {
         horizontalInput = 0f;
@@ -34,9 +34,9 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         originalColliderOffset = playerCollider.offset;
         originalColliderSize = playerCollider.size;
+        playerState = PlayerState.grounded;
     }
 
-    // Update is called once per frame
     void Update()
     {
         CheckForFalling();
@@ -46,10 +46,9 @@ public class PlayerController : MonoBehaviour
 
     void GetPlayerInput()
     {
-        horizontalInput = Input.GetAxisRaw("Horizontal");
+        horizontalInput = Input.GetAxis("Horizontal");
 
         MovePlayer(horizontalInput);
-        PlayMoveAnimation();
 
         if (Input.GetKey(KeyCode.LeftControl))
         {
@@ -66,7 +65,8 @@ public class PlayerController : MonoBehaviour
 
     void PlayMoveAnimation() => animator.SetFloat("Speed", Mathf.Abs(horizontalInput));
 
-    void PlayJumpAnimation() => animator.SetBool("PlayerJumped", true);
+    void PlayJumpAnimation() => playerState = PlayerState.jumping;
+    
   
 
     void MovePlayer(float inputHorizontal)
@@ -76,13 +76,18 @@ public class PlayerController : MonoBehaviour
         position.x += inputHorizontal * moveSpeed * Time.deltaTime;
         transform.position = position;
 
-        if(Input.GetKeyDown(KeyCode.Space) && playerState != PlayerState.jumping)
+        if (Input.GetKeyDown(KeyCode.Space) && IsGrounded())
         {
             rb.velocity = new Vector2(rb.velocity.x, jumpPower);
-            playerState = PlayerState.jumping;
             PlayJumpAnimation();
         }
+
+        else if(IsGrounded())
+            PlayMoveAnimation();
+
+        animator.SetInteger("PlayerState", (int)playerState);
     }
+
     void RestoreColliderSize()
     {
         playerCollider.offset = originalColliderOffset;
@@ -94,6 +99,7 @@ public class PlayerController : MonoBehaviour
         playerCollider.offset = newCrouchColliderOffset;
         playerCollider.size = newCrouchColliderSize;
     }
+
     void CheckDirection()
     {
         if (horizontalInput < 0f)
@@ -105,30 +111,33 @@ public class PlayerController : MonoBehaviour
 
     void CheckForFalling()
     {
-        if (IsGrounded())
-        {
-            animator.SetBool("PlayerJumped", false);
-            playerState = PlayerState.idle;
-        }
+        if (!IsGrounded() && rb.velocity.y < 0f)
+            playerState = PlayerState.falling;
+
+        animator.SetInteger("PlayerState", (int)playerState);
     }
+
     bool IsGrounded()
     {
-        if (Physics2D.Raycast(playerCollider.bounds.center, -transform.up, 2.3f, LayerMask.GetMask("Platform")))
+        if (Physics2D.Raycast(playerCollider.bounds.center, -transform.up, 2.2f, LayerMask.GetMask("Platform")))
+        {
+            playerState = PlayerState.grounded;
+            animator.SetInteger("PlayerState", (int)playerState);
             return true;
-
+        }
         return false;
     }
 
-    //void OnDrawGizmos()
-    //{
-    //    Gizmos.color = Color.green;
-    //    RaycastHit2D rayhit = Physics2D.Raycast(playerCollider.bounds.center, -transform.up, 2.3f, LayerMask.GetMask("Platform"));
-    //    Gizmos.DrawRay(playerCollider.bounds.center, -transform.up);
+    void OnDrawGizmos()
+    {
+        Gizmos.color = Color.green;
+        RaycastHit2D rayhit = Physics2D.Raycast(playerCollider.bounds.center, -transform.up, 2.3f, LayerMask.GetMask("Platform"));
+        Gizmos.DrawRay(playerCollider.bounds.center, -transform.up);
 
-    //    if (rayhit)
-    //    {
-    //        Gizmos.color = Color.red;
-    //        Gizmos.DrawRay(playerCollider.bounds.center, -transform.up);
-    //    }
-    //}
+        if (rayhit)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawRay(playerCollider.bounds.center, -transform.up);
+        }
+    }
 }
