@@ -9,6 +9,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Vector2 newCrouchColliderSize;
     [SerializeField] private float moveSpeed;
     [SerializeField] private float jumpPower;
+    [SerializeField] private float knockbackForce;
 
 
     private Rigidbody2D rb;
@@ -22,29 +23,45 @@ public class PlayerController : MonoBehaviour
     {
         grounded,
         falling,
-        jumping
+        jumping,
+        dead
     };
 
     private PlayerState playerState;
 
-    void Start()
+    private void Start()
     {
         horizontalInput = 0f;
+
         playerCollider = GetComponent<CapsuleCollider2D>();
         rb = GetComponent<Rigidbody2D>();
+
         originalColliderOffset = playerCollider.offset;
         originalColliderSize = playerCollider.size;
+
         playerState = PlayerState.grounded;
+
+        PlayerHealth.PlayerDamaged += KnockBackPlayer;
+        PlayerHealth.PlayerDead += KillPlayer;
     }
 
-    void Update()
+    private void Update()
     {
+        if (playerState == PlayerState.dead)
+            return;
+
         CheckForFalling();
         GetPlayerInput();
         CheckDirection();
     }
 
-    void GetPlayerInput()
+    private void OnDestroy()
+    {
+        PlayerHealth.PlayerDamaged -= KnockBackPlayer;
+        PlayerHealth.PlayerDead -= KillPlayer;
+    }
+
+    private void GetPlayerInput()
     {
         horizontalInput = Input.GetAxis("Horizontal");
 
@@ -63,13 +80,13 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void PlayMoveAnimation() => animator.SetFloat("Speed", Mathf.Abs(horizontalInput));
+    private void PlayMoveAnimation() => animator.SetFloat("Speed", Mathf.Abs(horizontalInput));
 
-    void PlayJumpAnimation() => playerState = PlayerState.jumping;
+    private void PlayJumpAnimation() => playerState = PlayerState.jumping;
     
   
 
-    void MovePlayer(float inputHorizontal)
+    private void MovePlayer(float inputHorizontal)
     {
         Vector3 position = transform.position;
 
@@ -88,19 +105,28 @@ public class PlayerController : MonoBehaviour
         animator.SetInteger("PlayerState", (int)playerState);
     }
 
-    void RestoreColliderSize()
+    private void KnockBackPlayer(int health) => rb.AddForce(new Vector2(-transform.forward.z, knockbackForce), ForceMode2D.Impulse);
+
+    private void KillPlayer()
+    {
+        animator.SetTrigger("PlayerDead");
+        playerState = PlayerState.dead;
+        Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("Player"), LayerMask.NameToLayer("Enemy"), true);
+    }
+
+    private void RestoreColliderSize()
     {
         playerCollider.offset = originalColliderOffset;
         playerCollider.size = originalColliderSize;
     }
 
-    void ResizeCollider()
+    private void ResizeCollider()
     {
         playerCollider.offset = newCrouchColliderOffset;
         playerCollider.size = newCrouchColliderSize;
     }
 
-    void CheckDirection()
+    private void CheckDirection()
     {
         if (horizontalInput < 0f)
             transform.eulerAngles = new Vector3(0, 180, 0);
@@ -109,7 +135,7 @@ public class PlayerController : MonoBehaviour
             transform.eulerAngles = new Vector3(0, 0, 0);
     }
 
-    void CheckForFalling()
+    private void CheckForFalling()
     {
         if (!IsGrounded() && rb.velocity.y < 0f)
             playerState = PlayerState.falling;
@@ -117,7 +143,7 @@ public class PlayerController : MonoBehaviour
         animator.SetInteger("PlayerState", (int)playerState);
     }
 
-    bool IsGrounded()
+    private bool IsGrounded()
     {
         if (Physics2D.Raycast(playerCollider.bounds.center, -transform.up, 2.2f, LayerMask.GetMask("Platform")))
         {
@@ -132,12 +158,10 @@ public class PlayerController : MonoBehaviour
     {
         Gizmos.color = Color.green;
         RaycastHit2D rayhit = Physics2D.Raycast(playerCollider.bounds.center, -transform.up, 2.3f, LayerMask.GetMask("Platform"));
-        Gizmos.DrawRay(playerCollider.bounds.center, -transform.up);
 
         if (rayhit)
-        {
             Gizmos.color = Color.red;
-            Gizmos.DrawRay(playerCollider.bounds.center, -transform.up);
-        }
+    
+        Gizmos.DrawRay(playerCollider.bounds.center, -transform.up);
     }
 }

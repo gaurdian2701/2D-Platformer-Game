@@ -8,19 +8,24 @@ public class LevelManager : MonoBehaviour
 
     private void Start()
     {
-        KillZone.PlayerFallen += ReloadScene;
+        KillZone.PlayerFallen += InitiateSceneReload;
+        PlayerHealth.PlayerDead += InitiateSceneReload;
     }
 
     private void OnDestroy()
     {
-        KillZone.PlayerFallen -= ReloadScene;
+        KillZone.PlayerFallen -= InitiateSceneReload;
+        PlayerHealth.PlayerDead -= InitiateSceneReload;
     }
 
-    void OnTriggerEnter2D(Collider2D other)
+    private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Player"))
             SceneManager.LoadScene("Level1");
     }
 
-    void ReloadScene() => SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    private void InitiateSceneReload() => Invoke("ReloadScene", 3f);
+
+    private void ReloadScene() => SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+
 }
