@@ -44,6 +44,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f59519a39dbdfb549971a7490d6c4828, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  GameOverScreen: {fileID: 2027922058201975593, guid: 935388b78c05ff441927e1aafb8d35a3,
+    type: 3}
 --- !u!61 &9199820052362072558
 BoxCollider2D:
   m_ObjectHideFlags: 0
