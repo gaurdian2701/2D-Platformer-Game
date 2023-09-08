@@ -29,4 +29,6 @@ public class LevelManager : MonoBehaviour
 
     public void ReloadScene() => SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 
+    public void LoadLobbyScene() => SceneManager.LoadScene("Lobby");
+
 }
