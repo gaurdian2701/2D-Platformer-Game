@@ -6,7 +6,16 @@ using UnityEngine.SceneManagement;
 
 public class LobbyManager : MonoBehaviour
 {
-    public void StartGame() => SceneManager.LoadScene("Level1");
+    [SerializeField] private GameObject LevelList;
+    private void Start()
+    {
+        HideLevelList();
+    }
+    public void ShowLevelList() => LevelList.SetActive(true);
+
+    public void HideLevelList() => LevelList.SetActive(false);
+
+    public void LoadLevel(string levelName) => SceneManager.LoadScene(levelName);
 
     public void QuitGame() => Application.Quit();
 }
