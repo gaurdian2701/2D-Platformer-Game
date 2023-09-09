@@ -22,7 +22,7 @@ public class LevelManager : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.GetComponent<PlayerController>())
-            SceneManager.LoadScene("Level1");
+            LoadLobbyScene();
     }
 
     private void ShowGameOverScreen() => GameOverScreen.SetActive(true);
