@@ -5,17 +5,12 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] private Animator animator;
-    [SerializeField] private Vector2 newCrouchColliderOffset;
-    [SerializeField] private Vector2 newCrouchColliderSize;
     [SerializeField] private float moveSpeed;
     [SerializeField] private float jumpPower;
     [SerializeField] private float knockbackForce;
 
 
     private Rigidbody2D rb;
-
-    private Vector2 originalColliderOffset;
-    private Vector2 originalColliderSize;
     private CapsuleCollider2D playerCollider;
     private float horizontalInput;
 
@@ -35,9 +30,6 @@ public class PlayerController : MonoBehaviour
 
         playerCollider = GetComponent<CapsuleCollider2D>();
         rb = GetComponent<Rigidbody2D>();
-
-        originalColliderOffset = playerCollider.offset;
-        originalColliderSize = playerCollider.size;
 
         playerState = PlayerState.grounded;
 
@@ -70,13 +62,11 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKey(KeyCode.LeftControl))
         {
             animator.SetBool("PlayerCrouching", true);
-            ResizeCollider();
         }
 
         if (Input.GetKeyUp(KeyCode.LeftControl))
         {
             animator.SetBool("PlayerCrouching", false);
-            RestoreColliderSize();
         }
     }
 
@@ -114,18 +104,6 @@ public class PlayerController : MonoBehaviour
         Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("Player"), LayerMask.NameToLayer("Enemy"), true);
     }
 
-    private void RestoreColliderSize()
-    {
-        playerCollider.offset = originalColliderOffset;
-        playerCollider.size = originalColliderSize;
-    }
-
-    private void ResizeCollider()
-    {
-        playerCollider.offset = newCrouchColliderOffset;
-        playerCollider.size = newCrouchColliderSize;
-    }
-
     private void CheckDirection()
     {
         if (horizontalInput < 0f)
@@ -152,16 +130,5 @@ public class PlayerController : MonoBehaviour
             return true;
         }
         return false;
-    }
-
-    void OnDrawGizmos()
-    {
-        Gizmos.color = Color.green;
-        RaycastHit2D rayhit = Physics2D.Raycast(playerCollider.bounds.center, -transform.up, 2.3f, LayerMask.GetMask("Platform"));
-
-        if (rayhit)
-            Gizmos.color = Color.red;
-    
-        Gizmos.DrawRay(playerCollider.bounds.center, -transform.up);
     }
 }
