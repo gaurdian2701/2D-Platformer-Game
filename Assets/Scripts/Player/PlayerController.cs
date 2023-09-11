@@ -24,6 +24,12 @@ public class PlayerController : MonoBehaviour
 
     private PlayerState playerState;
 
+    public void LevelComplete()
+    {
+        animator.SetTrigger("LevelComplete");
+        enabled = false;
+    }
+
     private void Start()
     {
         horizontalInput = 0f;

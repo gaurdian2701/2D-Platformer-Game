@@ -6,11 +6,14 @@ using UnityEngine.SceneManagement;
 public class LevelLoader : MonoBehaviour
 {
     [SerializeField] private GameObject GameOverScreen;
+    [SerializeField] private GameObject LevelCompleteScreen;
+
     private void Start()
     {
         KillZone.PlayerFallen += ShowGameOverScreen;
         PlayerHealth.PlayerDead += ShowGameOverScreen;
         GameOverScreen.SetActive(false);
+        LevelCompleteScreen.SetActive(false);
     }
 
     private void OnDestroy()
@@ -24,6 +27,8 @@ public class LevelLoader : MonoBehaviour
         if (other.GetComponent<PlayerController>())
         {
             LevelManager.Instance.MarkLevelComplete(SceneManager.GetActiveScene().name);
+            LevelCompleteScreen.SetActive(true);
+            other.gameObject.GetComponent<PlayerController>().LevelComplete();
         }
     }
 
@@ -54,6 +59,16 @@ public class LevelLoader : MonoBehaviour
             default:
                 break;
         }
+    }
+
+    public void LoadNextLevel()
+    {
+        string nextLevel = "Level" + (SceneManager.GetActiveScene().buildIndex + 1);
+
+        if (!SceneManager.GetSceneByName(nextLevel).IsValid())
+            LoadLobbyScene();
+        else
+            LoadLevel(nextLevel);
     }
 
 }

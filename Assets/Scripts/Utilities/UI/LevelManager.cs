@@ -45,7 +45,6 @@ public class LevelManager : MonoBehaviour
         SetLevelStatus(levelName, LevelStatus.Completed);
         int nextSceneBuildIndex = SceneManager.GetActiveScene().buildIndex + 1;
         SetLevelStatus("Level" + nextSceneBuildIndex, LevelStatus.Unlocked);
-        levelLoader.LoadLevel("Level" + nextSceneBuildIndex);
     }
     
 }

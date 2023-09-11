@@ -195,6 +195,11 @@ PrefabInstance:
       propertyPath: GameOverScreen
       value: 
       objectReference: {fileID: 990726500}
+    - target: {fileID: 9199820052362072544, guid: 66d5df4c3e673054b963f44f3b7c55a4,
+        type: 3}
+      propertyPath: LevelCompleteScreen
+      value: 
+      objectReference: {fileID: 990726501}
     - target: {fileID: 9199820052362072545, guid: 66d5df4c3e673054b963f44f3b7c55a4,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1035,6 +1040,12 @@ PrefabInstance:
 --- !u!1 &990726500 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2027922058428518394, guid: 935388b78c05ff441927e1aafb8d35a3,
+    type: 3}
+  m_PrefabInstance: {fileID: 990726499}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &990726501 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 658047189916668978, guid: 935388b78c05ff441927e1aafb8d35a3,
     type: 3}
   m_PrefabInstance: {fileID: 990726499}
   m_PrefabAsset: {fileID: 0}
