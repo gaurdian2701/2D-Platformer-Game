@@ -5,30 +5,46 @@ using UnityEngine.SceneManagement;
 
 public class LevelManager : MonoBehaviour
 {
-    [SerializeField] private GameObject GameOverScreen;
+    private static LevelManager instance;
+
+    public static LevelManager Instance { get { return instance; } }
+
+    [SerializeField] private LevelLoader levelLoader;
+
+    private void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+
+        else
+            Destroy(gameObject);
+    }
+
     private void Start()
     {
-        KillZone.PlayerFallen += ShowGameOverScreen;
-        PlayerHealth.PlayerDead += ShowGameOverScreen;
-        GameOverScreen.SetActive(false);
+        if (GetLevelStatus("Level1") == LevelStatus.Locked)
+            SetLevelStatus("Level1", LevelStatus.Unlocked);
     }
 
-    private void OnDestroy()
+    public LevelStatus GetLevelStatus(string levelName)
     {
-        KillZone.PlayerFallen -= ShowGameOverScreen;
-        PlayerHealth.PlayerDead -= ShowGameOverScreen;
+        LevelStatus levelStatus = (LevelStatus)PlayerPrefs.GetInt(levelName, 0);
+        return levelStatus;
     }
 
-    private void OnTriggerEnter2D(Collider2D other)
+    public void SetLevelStatus(string levelName, LevelStatus status)
     {
-        if (other.GetComponent<PlayerController>())
-            LoadLobbyScene();
+        PlayerPrefs.SetInt(levelName, (int)status);
     }
 
-    private void ShowGameOverScreen() => GameOverScreen.SetActive(true);
-
-    public void ReloadScene() => SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-
-    public void LoadLobbyScene() => SceneManager.LoadScene("Lobby");
-
+    public void MarkLevelComplete(string levelName)
+    {
+        SetLevelStatus(levelName, LevelStatus.Completed);
+        int nextSceneBuildIndex = SceneManager.GetActiveScene().buildIndex + 1;
+        SetLevelStatus("Level" + nextSceneBuildIndex, LevelStatus.Unlocked);
+    }
+    
 }

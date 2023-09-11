@@ -15,7 +15,5 @@ public class LobbyManager : MonoBehaviour
 
     public void HideLevelList() => LevelList.SetActive(false);
 
-    public void LoadLevel(string levelName) => SceneManager.LoadScene(levelName);
-
     public void QuitGame() => Application.Quit();
 }
