@@ -11,9 +11,21 @@ public class LobbyManager : MonoBehaviour
     {
         HideLevelList();
     }
-    public void ShowLevelList() => LevelList.SetActive(true);
+    public void ShowLevelList()
+    {
+        LevelList.SetActive(true);
+        SoundManager.Instance.PlaySound(Sounds.ButtonClick);
+    }
 
-    public void HideLevelList() => LevelList.SetActive(false);
+    public void HideLevelList()
+    {
+        LevelList.SetActive(false);
+        SoundManager.Instance.PlaySound(Sounds.ButtonClick);
+    }
 
-    public void QuitGame() => Application.Quit();
+    public void QuitGame()
+    {
+        SoundManager.Instance.PlaySound(Sounds.ButtonClick);
+        Application.Quit();
+    }
 }
