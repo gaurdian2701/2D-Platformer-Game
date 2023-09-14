@@ -53,12 +53,12 @@ public class SoundManager : MonoBehaviour
         switch (type.playBackType)
         {
             case PlayBackType.Instant:
-                soundEffect.Play(); 
+                soundEffect.PlayOneShot(soundEffect.clip); 
                 break;
 
             case PlayBackType.Continuous:
                 if (!soundEffect.isPlaying)
-                    soundEffect.PlayOneShot(type.soundClip);
+                    soundEffect.Play();
                 break;
 
             default:
@@ -81,10 +81,12 @@ public class SoundManager : MonoBehaviour
 public enum Sounds
 {
     ButtonClick,
+    NextLevel,
     PlayerMove,
-    PlayerDeath,
+    PlayerHurt,
     PlayerJump,
-    Music
+    Music,
+    DeathMusic
 };
 
 public enum PlayBackType

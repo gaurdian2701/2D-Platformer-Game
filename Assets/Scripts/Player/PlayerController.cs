@@ -30,6 +30,8 @@ public class PlayerController : MonoBehaviour
         enabled = false;
     }
 
+    private void Awake() => Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("Player"), LayerMask.NameToLayer("Enemy"), false);
+
     private void Start()
     {
         horizontalInput = 0f;
@@ -112,7 +114,7 @@ public class PlayerController : MonoBehaviour
         animator.SetTrigger("PlayerDead");
         playerState = PlayerState.dead;
         Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("Player"), LayerMask.NameToLayer("Enemy"), true);
-        SoundManager.Instance.PlaySound(Sounds.PlayerDeath);
+        SoundManager.Instance.PlaySound(Sounds.PlayerHurt);
     }
 
     private void CheckDirection()

@@ -34,7 +34,11 @@ public class LevelLoader : MonoBehaviour
         }
     }
 
-    private void ShowGameOverScreen() => GameOverScreen.SetActive(true);
+    private void ShowGameOverScreen()
+    {
+        GameOverScreen.SetActive(true);
+        SoundManager.Instance.PlaySound(Sounds.DeathMusic);
+    }
 
     public void ReloadScene()
     {
@@ -55,13 +59,13 @@ public class LevelLoader : MonoBehaviour
                 break;
 
             case LevelStatus.Unlocked:
+                SoundManager.Instance.PlaySound(Sounds.NextLevel);
                 SceneManager.LoadScene(levelName);
-                SoundManager.Instance.PlaySound(Sounds.ButtonClick);
                 break;
 
             case LevelStatus.Completed:
+                SoundManager.Instance.PlaySound(Sounds.NextLevel);
                 SceneManager.LoadScene(levelName);
-                SoundManager.Instance.PlaySound(Sounds.ButtonClick);
                 break;
 
             default:
