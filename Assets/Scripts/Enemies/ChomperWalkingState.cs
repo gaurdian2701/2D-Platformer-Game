@@ -24,9 +24,10 @@ public class ChomperWalkingState : ChomperBaseState
 
         BoxCollider2D enemyCollider = chomper.GetComponent<BoxCollider2D>();
 
-        RaycastHit2D rayhit = Physics2D.Raycast(enemyCollider.bounds.center, new Vector2(chomper.transform.forward.z, -0.5f), 2.5f, LayerMask.GetMask("Platform"));
+        RaycastHit2D rayhitbottom = Physics2D.Raycast(enemyCollider.bounds.center, new Vector2(chomper.transform.forward.z, -0.5f), 2.5f, LayerMask.GetMask("Platform"));
+        RaycastHit2D rayhitforward = Physics2D.Raycast(enemyCollider.bounds.center, chomper.transform.right, 1f, LayerMask.GetMask("Platform"));
 
-        if (!rayhit && WalkAnimationTriggered(chomper))
+        if ((!rayhitbottom || rayhitforward) && WalkAnimationTriggered(chomper))
         {
             if (direction == 180f)
                 direction = 0f;

@@ -5,6 +5,7 @@ using System;
 
 public class PlayerHealth : MonoBehaviour
 {
+    [SerializeField] private ParticleSystem hurtParticles;
     private int health;
     private Animator animator;
 
@@ -40,6 +41,8 @@ public class PlayerHealth : MonoBehaviour
 
     private void DecreaseHealth()
     {
+        SoundManager.Instance.PlaySound(Sounds.PlayerHurt);
+        hurtParticles.Play();
         animator.SetTrigger("PlayerHurt");
         health -= 1;
 

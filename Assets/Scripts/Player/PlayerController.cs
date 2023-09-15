@@ -30,6 +30,8 @@ public class PlayerController : MonoBehaviour
         enabled = false;
     }
 
+    private void Awake() => Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("Player"), LayerMask.NameToLayer("Enemy"), false);
+
     private void Start()
     {
         horizontalInput = 0f;
@@ -84,6 +86,9 @@ public class PlayerController : MonoBehaviour
 
     private void MovePlayer(float inputHorizontal)
     {
+        if (inputHorizontal != 0 && IsGrounded())
+            SoundManager.Instance.PlaySound(Sounds.PlayerMove);
+
         Vector3 position = transform.position;
 
         position.x += inputHorizontal * moveSpeed * Time.deltaTime;
@@ -92,6 +97,7 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space) && IsGrounded())
         {
             rb.velocity = new Vector2(rb.velocity.x, jumpPower);
+            SoundManager.Instance.PlaySound(Sounds.PlayerJump);
             PlayJumpAnimation();
         }
 
@@ -108,6 +114,7 @@ public class PlayerController : MonoBehaviour
         animator.SetTrigger("PlayerDead");
         playerState = PlayerState.dead;
         Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("Player"), LayerMask.NameToLayer("Enemy"), true);
+        SoundManager.Instance.PlaySound(Sounds.PlayerHurt);
     }
 
     private void CheckDirection()
@@ -123,6 +130,9 @@ public class PlayerController : MonoBehaviour
     {
         if (!IsGrounded() && rb.velocity.y < 0f)
             playerState = PlayerState.falling;
+
+        if (rb.velocity.y > 0f)
+            playerState = PlayerState.jumping;
 
         animator.SetInteger("PlayerState", (int)playerState);
     }

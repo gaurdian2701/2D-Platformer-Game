@@ -8,7 +8,6 @@ public class ChomperStateManager : MonoBehaviour
 
     public ChomperIdleState idle = new ChomperIdleState();
     public ChomperWalkingState walk = new ChomperWalkingState();
-    public ChomperAttackState attack = new ChomperAttackState();
 
     private BoxCollider2D enemyCollider;
     private float moveSpeed = 2f;
@@ -35,16 +34,4 @@ public class ChomperStateManager : MonoBehaviour
     }
 
     public void RestoreSpeed() => currentSpeed = moveSpeed;
-
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.green;
-
-        RaycastHit2D rayhit = Physics2D.Raycast(enemyCollider.bounds.center, new Vector2(transform.forward.z, -0.5f), 2.5f, LayerMask.GetMask("Platform"));
-
-        if(rayhit)
-            Gizmos.color = Color.red;
-
-        Gizmos.DrawRay(enemyCollider.bounds.center, new Vector2(transform.forward.z, -0.5f));
-    }
 }
