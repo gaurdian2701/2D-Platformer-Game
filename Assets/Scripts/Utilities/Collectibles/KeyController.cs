@@ -17,10 +17,12 @@ public class KeyController : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.GetComponent<PlayerController>())
+        {
             KeyPickedUp.Invoke();
-
-        animator.SetTrigger("KeyCollected");
-        WaitBeforeDestroy();
+            animator.SetTrigger("KeyCollected");
+            WaitBeforeDestroy();
+            GetComponent<BoxCollider2D>().enabled = false;
+        }
     }
 
     private IEnumerator WaitBeforeDestroy()

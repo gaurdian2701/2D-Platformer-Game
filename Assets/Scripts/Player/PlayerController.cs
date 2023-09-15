@@ -131,6 +131,9 @@ public class PlayerController : MonoBehaviour
         if (!IsGrounded() && rb.velocity.y < 0f)
             playerState = PlayerState.falling;
 
+        if (rb.velocity.y > 0f)
+            playerState = PlayerState.jumping;
+
         animator.SetInteger("PlayerState", (int)playerState);
     }
 
