@@ -15,3 +15,7 @@
 ## Programming Patterns Used
 - Singleton Pattern: This has been used for Level Locking/Unlocking system and other aspects like UI Manager and Sounds.
 - Finite State Machine: This has been used for the enemies in the game. The enemy has two states, Idle and Walking.
+
+## Demo Video
+- You can check out the demo video in my portfolio website:
+  https://gaurdiankiran.wixsite.com/kirangeorgeportfolio/portfolio
